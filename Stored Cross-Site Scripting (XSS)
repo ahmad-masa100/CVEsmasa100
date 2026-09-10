@@ -1,24 +1,24 @@
-## Stored Cross-Site Scripting (XSS) in Human Resource Management System in PHP eventSubject Parameter
-## Credit
+##Stored Cross-Site Scripting (XSS) in Human Resource Management System in PHP eventSubject Parameter
+##Credit
 Discovered by: Ahmad-masa10
 
-## Product
+##Product
 Human Resource Management System in PHP
 
-## Vendor
+##Vendor
 Code-Projects
 
-## Vendor Homepage
+##Vendor Homepage
 Human Resource Management System in PHP
 
-## Affected Version
+##Affected Version
 Human Resource Management System in PHP
 
 The exact version should be confirmed from the downloaded source package before submitting the report to a vulnerability database or requesting a CVE.
 
 The Code-Projects project page identifies the application as a PHP-based Human Resource Management system with administrative functionality for managing employees, live events, and notices. 
 
-## Vulnerability Type
+##Vulnerability Type
 Stored Cross-Site Scripting (Stored XSS)
 
 CWE
@@ -26,10 +26,10 @@ CWE-79 – Improper Neutralization of Input During Web Page Generation (Cross-Si
 
 CWE-79 covers cases where user-controlled input is not properly neutralized before being incorporated into web page output. 
 
-## Severity
+##Severity
 Medium
 
-## Description
+##Description
 The Human Resource Management System in PHP is affected by a Stored Cross-Site Scripting (XSS) vulnerability in the live event functionality.
 
 The vulnerability occurs when attacker-controlled input is submitted through the eventSubject parameter and stored by the application through the event storage functionality. The malicious value is subsequently rendered in the live event history page:
@@ -39,14 +39,14 @@ Testing confirmed that the following XSS payload could be stored and subsequentl
 
 --><script>alert(123)</script>
 The vulnerable request used to access the affected page is:
-
+```plain
 GET /humanresourcemanagementsystem/views/admin/liveEventHistory.php HTTP/1.1
 Host: localhost
 Because the malicious payload is stored server-side and later rendered in the application interface, this vulnerability is classified as a Stored (Persistent) Cross-Site Scripting vulnerability.
 
 An attacker with access to the functionality that allows modification or creation of live events may inject malicious JavaScript that executes in the browser of users viewing the affected event history page.
 
-## Vulnerable Files
+##Vulnerable Files
 Event Storage Component
 /humanresourcemanagementsystem/src/store/EventStore.php
 ##Vulnerable Rendering Page
@@ -60,13 +60,13 @@ GET
 eventSubject
 Proof of Concept
 The following stored XSS payload was used during testing:
-
+##
 --><script>alert(123)</script>
 The payload was stored through the application's live event functionality and subsequently triggered when accessing the following page:
-
+##
 http://localhost/humanresourcemanagementsystem/views/admin/liveEventHistory.php
 The following HTTP request demonstrates access to the affected page:
-
+```plain
 GET /humanresourcemanagementsystem/views/admin/liveEventHistory.php HTTP/1.1
 Host: localhost
 sec-ch-ua: "Not;A=Brand";v="8", "Chromium";v="150"
@@ -119,7 +119,7 @@ This confirms that attacker-controlled data stored through the live event functi
 
 Because the payload remains stored server-side and executes when the affected content is viewed, the vulnerability is classified as a Stored Cross-Site Scripting (Persistent XSS) vulnerability.
 
-Root Cause
+##Root Cause
 The vulnerability is caused by improper handling of attacker-controlled input submitted through the live event functionality.
 
 Specifically:
@@ -159,7 +159,7 @@ The vulnerability results from the combination of persistent storage of attacker
 
 CWE documentation includes stored XSS scenarios in which data is persisted and later displayed without proper neutralization. 
 
-Impact
+##Impact
 Successful exploitation of this vulnerability may allow an attacker to:
 
 Execute arbitrary JavaScript in the browser of affected users.
@@ -182,23 +182,23 @@ Because the malicious payload is stored persistently, multiple users may be affe
 
 The Code-Projects application specifically includes administrative functionality for managing live events, making the affected functionality part of the application's intended administration features. 
 
-## Vulnerability Classification
+##Vulnerability Classification
 CWE
 CWE-79 – Improper Neutralization of Input During Web Page Generation (Cross-Site Scripting)
 
-## Vulnerability Class
+##Vulnerability Class
 Stored Cross-Site Scripting (Persistent XSS)
 OWASP Classification
 A03:2021 – Injection
 
-## CVSS Assessment
+##CVSS Assessment
 A possible CVSS v3.1 vector is:
 
 CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N
-## Severity
+##Severity
 Medium
 
-## CVSS Rationale
+##CVSS Rationale
 AV:N (Network): The vulnerability can be exploited through the web application.
 
 AC:L (Low): Exploitation requires submitting a crafted payload.
@@ -217,7 +217,7 @@ A:N (None): No direct availability impact was demonstrated.
 
 The final CVSS vector should be adjusted according to the exact privileges required and the confirmed impact.
 
-## Suggested Remediation
+##Suggested Remediation
 1. Apply Context-Aware Output Encoding
 All user-controlled values should be encoded before being rendered in HTML.
 
@@ -232,7 +232,7 @@ This ensures that characters such as:
 '
 are treated as text instead of executable HTML markup.
 
-## 2. Review the eventSubject Output
+##2. Review the eventSubject Output
 The code responsible for rendering event subjects in:
 
 /humanresourcemanagementsystem/views/admin/liveEventHistory.php
@@ -271,4 +271,5 @@ Example:
 Content-Security-Policy: default-src 'self'; script-src 'self'; object-src 'none'
 The policy should be tested against the application's legitimate functionality.
 
+## POC video
 https://github.com/user-attachments/assets/f4902bfb-fc8e-4e4c-8ef8-01fde7c51038
