@@ -1,24 +1,24 @@
-##Stored Cross-Site Scripting (XSS) in Human Resource Management System in PHP eventSubject Parameter
-##Credit
+## Stored Cross-Site Scripting (XSS) in Human Resource Management System in PHP eventSubject Parameter
+## Credit
 Discovered by: Ahmad-masa10
 
-##Product
+## Product
 Human Resource Management System in PHP
 
-##Vendor
+## Vendor
 Code-Projects
 
-##Vendor Homepage
+## Vendor Homepage
 Human Resource Management System in PHP
 
-##Affected Version
+## Affected Version
 Human Resource Management System in PHP
 
 The exact version should be confirmed from the downloaded source package before submitting the report to a vulnerability database or requesting a CVE.
 
 The Code-Projects project page identifies the application as a PHP-based Human Resource Management system with administrative functionality for managing employees, live events, and notices. 
 
-##Vulnerability Type
+## Vulnerability Type
 Stored Cross-Site Scripting (Stored XSS)
 
 CWE
@@ -26,10 +26,10 @@ CWE-79 – Improper Neutralization of Input During Web Page Generation (Cross-Si
 
 CWE-79 covers cases where user-controlled input is not properly neutralized before being incorporated into web page output. 
 
-##Severity
+## Severity
 Medium
 
-##Description
+## Description
 The Human Resource Management System in PHP is affected by a Stored Cross-Site Scripting (XSS) vulnerability in the live event functionality.
 
 The vulnerability occurs when attacker-controlled input is submitted through the eventSubject parameter and stored by the application through the event storage functionality. The malicious value is subsequently rendered in the live event history page:
@@ -46,7 +46,7 @@ Because the malicious payload is stored server-side and later rendered in the ap
 
 An attacker with access to the functionality that allows modification or creation of live events may inject malicious JavaScript that executes in the browser of users viewing the affected event history page.
 
-##Vulnerable Files
+## Vulnerable Files
 Event Storage Component
 /humanresourcemanagementsystem/src/store/EventStore.php
 ##Vulnerable Rendering Page
@@ -56,7 +56,7 @@ Affected Endpoint
 /humanresourcemanagementsystem/views/admin/liveEventHistory.php
 HTTP Method
 GET
-##Vulnerable Parameter
+## Vulnerable Parameter
 eventSubject
 Proof of Concept
 The following stored XSS payload was used during testing:
@@ -182,23 +182,23 @@ Because the malicious payload is stored persistently, multiple users may be affe
 
 The Code-Projects application specifically includes administrative functionality for managing live events, making the affected functionality part of the application's intended administration features. 
 
-##Vulnerability Classification
+## Vulnerability Classification
 CWE
 CWE-79 – Improper Neutralization of Input During Web Page Generation (Cross-Site Scripting)
 
-##Vulnerability Class
+## Vulnerability Class
 Stored Cross-Site Scripting (Persistent XSS)
 OWASP Classification
 A03:2021 – Injection
 
-##CVSS Assessment
+## CVSS Assessment
 A possible CVSS v3.1 vector is:
 
 CVSS:3.1/AV:N/AC:L/PR:L/UI:R/S:C/C:L/I:L/A:N
-##Severity
+## Severity
 Medium
 
-##CVSS Rationale
+## CVSS Rationale
 AV:N (Network): The vulnerability can be exploited through the web application.
 
 AC:L (Low): Exploitation requires submitting a crafted payload.
@@ -217,7 +217,7 @@ A:N (None): No direct availability impact was demonstrated.
 
 The final CVSS vector should be adjusted according to the exact privileges required and the confirmed impact.
 
-##Suggested Remediation
+## Suggested Remediation
 1. Apply Context-Aware Output Encoding
 All user-controlled values should be encoded before being rendered in HTML.
 
@@ -232,7 +232,7 @@ This ensures that characters such as:
 '
 are treated as text instead of executable HTML markup.
 
-##2. Review the eventSubject Output
+## 2. Review the eventSubject Output
 The code responsible for rendering event subjects in:
 
 /humanresourcemanagementsystem/views/admin/liveEventHistory.php
@@ -240,11 +240,11 @@ should be reviewed.
 
 Unsafe output such as:
 
-##echo $eventSubject;
+## echo $eventSubject;
 should be replaced with:
 
 echo htmlspecialchars($eventSubject, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
-##3. Validate User Input
+## 3. Validate User Input
 The eventSubject parameter should be validated according to the expected application requirements.
 
 If event subjects are intended to contain plain text, HTML markup should not be accepted.
@@ -254,7 +254,7 @@ Example:
 $eventSubject = trim($_POST['eventSubject'] ?? '');
 Input validation should be considered an additional security layer and should not replace output encoding.
 
-##4. Review Other Event Parameters
+## 4. Review Other Event Parameters
 Other user-controlled event fields should also be reviewed for similar vulnerabilities, including:
 
 eventSubject
@@ -263,7 +263,7 @@ eventDate
 eventTime
 Any user-controlled value that is stored and later rendered should use context-appropriate output encoding.
 
-##5. Implement a Content Security Policy
+## 5. Implement a Content Security Policy
 A restrictive Content Security Policy may help reduce the impact of successful XSS vulnerabilities.
 
 Example:
